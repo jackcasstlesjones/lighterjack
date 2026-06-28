@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -41,6 +42,22 @@ export function PackItemRow({
   onDragEnd,
 }: Props) {
   const enabled = isItemEnabled(item);
+  const compact = mobileLayout === "compact";
+  const [showName, setShowName] = useState(false);
+  const nameRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!showName) return;
+    function onDown(e: MouseEvent | TouchEvent) {
+      if (!nameRef.current?.contains(e.target as Node)) setShowName(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+    };
+  }, [showName]);
 
   const grip = (
     <span
@@ -51,15 +68,33 @@ export function PackItemRow({
     </span>
   );
 
+  const nameClasses = `text-[14.5px] font-medium truncate ${
+    enabled ? "" : "line-through text-[#9a9a92]"
+  }`;
+
   const info = (
     <div className="flex-1 min-w-0">
-      <div
-        className={`text-[14.5px] font-medium truncate ${
-          enabled ? "" : "line-through text-[#9a9a92]"
-        }`}
-      >
-        {item.name}
-      </div>
+      {compact ? (
+        <div ref={nameRef} className="relative">
+          <button
+            type="button"
+            onClick={() => setShowName((s) => !s)}
+            className={`${nameClasses} block w-full text-left sm:cursor-default`}
+          >
+            {item.name}
+          </button>
+          {showName && (
+            <div
+              className="absolute z-20 top-full left-0 mt-1 max-w-[260px] bg-[#2c2c27] text-white text-[15px] font-medium rounded-md px-3 py-2 shadow-lg break-words whitespace-normal"
+              onClick={() => setShowName(false)}
+            >
+              {item.name}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={nameClasses}>{item.name}</div>
+      )}
       {item.desc && (
         <div className="text-[12.5px] text-[#a6a69e] truncate mt-px">
           {item.desc}

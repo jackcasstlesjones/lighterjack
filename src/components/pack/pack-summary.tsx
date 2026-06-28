@@ -19,18 +19,20 @@ type Props = {
 export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props) {
   const totalG = effectiveListGrams(categories);
 
-  let cum = 0;
+  const pcts = categories.map((c) => {
+    const g = effectiveCategoryGrams(c);
+    return totalG ? (g / totalG) * 100 : 0;
+  });
   const segments = categories
-    .map((c, i) => {
-      const g = effectiveCategoryGrams(c);
-      const pct = totalG ? (g / totalG) * 100 : 0;
-      const seg = {
+    .map((_, i) => {
+      const pct = pcts[i];
+      const cum = pcts.slice(0, i).reduce((a, b) => a + b, 0);
+      return {
         color: colorFor(i),
         dash: `${pct} ${100 - pct}`,
         offset: 100 - cum + 25,
+        pct,
       };
-      cum += pct;
-      return { ...seg, pct };
     })
     .filter((s) => s.pct > 0);
 
