@@ -15,13 +15,21 @@ type Props = {
   categories: Category[];
   totalUnit: "kg" | "g";
   onToggleTotalUnit: () => void;
+  excludeConsumables: boolean;
+  onToggleExcludeConsumables: () => void;
 };
 
-export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props) {
-  const totalG = effectiveListGrams(categories);
+export function PackSummary({
+  categories,
+  totalUnit,
+  onToggleTotalUnit,
+  excludeConsumables,
+  onToggleExcludeConsumables,
+}: Props) {
+  const totalG = effectiveListGrams(categories, excludeConsumables);
 
   const pcts = categories.map((c) => {
-    const g = effectiveCategoryGrams(c);
+    const g = effectiveCategoryGrams(c, excludeConsumables);
     return totalG ? (g / totalG) * 100 : 0;
   });
   const segments = categories
@@ -91,7 +99,7 @@ export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props)
         </div>
 
         {categories.map((c, i) => {
-          const g = effectiveCategoryGrams(c);
+          const g = effectiveCategoryGrams(c, excludeConsumables);
           const enabled = isCategoryEnabled(c);
           return (
             <div
@@ -134,6 +142,25 @@ export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props)
             / {totalLbs} lbs
           </span>
         </div>
+
+        <label className="flex items-center justify-end gap-2.5 px-1 pt-3 mt-1.5 text-[13px] font-medium text-[#4b4b44] cursor-pointer select-none">
+          <span>Exclude consumables from totals</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={excludeConsumables}
+            onClick={onToggleExcludeConsumables}
+            className={`relative inline-flex items-center w-9 h-5 rounded-full transition-colors flex-none ${
+              excludeConsumables ? "bg-secondary" : "bg-[#d6d6cf]"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 inline-block w-4 h-4 rounded-full bg-white shadow transition-transform ${
+                excludeConsumables ? "translate-x-[18px]" : "translate-x-0.5"
+              }`}
+            />
+          </button>
+        </label>
       </div>
     </Card>
   );

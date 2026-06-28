@@ -11,6 +11,7 @@ export type Item = {
   unit: "g" | "kg";
   qty: number;
   enabled: boolean;
+  consumable: boolean;
 };
 
 export type Category = {
@@ -25,6 +26,7 @@ export type ListDoc = {
   userId: string;
   name: string;
   categories: Category[];
+  excludeConsumables: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -47,6 +49,7 @@ export function toResponse(doc: ListDoc): ListResponse {
     id: doc._id!.toString(),
     name: doc.name,
     categories: doc.categories,
+    excludeConsumables: doc.excludeConsumables ?? false,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };
@@ -78,6 +81,8 @@ export function sanitizeCategories(input: unknown): Category[] {
                 unit: unit as "g" | "kg",
                 qty: Number.isFinite(qty) ? Math.max(0, Math.floor(qty)) : 1,
                 enabled: typeof i.enabled === "boolean" ? i.enabled : true,
+                consumable:
+                  typeof i.consumable === "boolean" ? i.consumable : false,
               } as Item;
             })
             .filter((x): x is Item => x !== null)
@@ -99,10 +104,10 @@ export function starterCategories(): Category[] {
       name: "Big 4",
       enabled: true,
       items: [
-        { id: uid("i"), name: "Tent", desc: "", weight: 1200, unit: "g", qty: 1, enabled: true },
-        { id: uid("i"), name: "Sleeping pad", desc: "", weight: 480, unit: "g", qty: 1, enabled: true },
-        { id: uid("i"), name: "Quilt", desc: "", weight: 600, unit: "g", qty: 1, enabled: true },
-        { id: uid("i"), name: "Pack", desc: "", weight: 900, unit: "g", qty: 1, enabled: true },
+        { id: uid("i"), name: "Tent", desc: "", weight: 1200, unit: "g", qty: 1, enabled: true, consumable: false },
+        { id: uid("i"), name: "Sleeping pad", desc: "", weight: 480, unit: "g", qty: 1, enabled: true, consumable: false },
+        { id: uid("i"), name: "Quilt", desc: "", weight: 600, unit: "g", qty: 1, enabled: true, consumable: false },
+        { id: uid("i"), name: "Pack", desc: "", weight: 900, unit: "g", qty: 1, enabled: true, consumable: false },
       ],
     },
     { id: uid("c"), name: "Clothes", enabled: true, items: [] },

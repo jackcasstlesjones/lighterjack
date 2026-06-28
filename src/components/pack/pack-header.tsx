@@ -68,7 +68,11 @@ export function PackHeader({
               >
                 <span className="font-medium">{l.name}</span>
                 <span className="num text-[12.5px] text-[#a6a69e]">
-                  {trim(effectiveListGrams(l.categories) / 1000)} kg
+                  {trim(
+                    effectiveListGrams(l.categories, l.excludeConsumables) /
+                      1000
+                  )}{" "}
+                  kg
                 </span>
                 {l.id === activeId ? (
                   <span className="sr-only">active</span>

@@ -23,6 +23,7 @@ export async function GET() {
       userId,
       name: "My pack",
       categories: starterCategories(),
+      excludeConsumables: false,
       createdAt: now,
       updatedAt: now,
     };
@@ -50,6 +51,7 @@ export async function POST(req: NextRequest) {
     userId,
     name,
     categories: [],
+    excludeConsumables: false,
     createdAt: now,
     updatedAt: now,
   };

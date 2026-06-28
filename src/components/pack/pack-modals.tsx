@@ -26,6 +26,7 @@ type Props = {
   onClose: () => void;
   onSaveItem: (draft: ItemDraft) => void;
   onSaveCategory: (name: string) => void;
+  onRequestDeleteItem: () => void;
   onConfirmDelete: () => void;
 };
 
@@ -34,6 +35,7 @@ export function PackModals({
   onClose,
   onSaveItem,
   onSaveCategory,
+  onRequestDeleteItem,
   onConfirmDelete,
 }: Props) {
   const open = modal !== null;
@@ -52,6 +54,7 @@ export function PackModals({
             isEdit={modal.itemId !== null}
             onCancel={onClose}
             onSave={onSaveItem}
+            onDelete={onRequestDeleteItem}
           />
         )}
         {modal?.type === "cat" && (
@@ -92,11 +95,13 @@ function ItemForm({
   isEdit,
   onCancel,
   onSave,
+  onDelete,
 }: {
   initial: ItemDraft;
   isEdit: boolean;
   onCancel: () => void;
   onSave: (draft: ItemDraft) => void;
+  onDelete: () => void;
 }) {
   return (
     <form
@@ -175,11 +180,26 @@ function ItemForm({
         </div>
       </div>
 
-      <DialogFooter className="mt-6">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit">{isEdit ? "Save changes" : "Add item"}</Button>
+      <DialogFooter className="mt-6 sm:justify-between">
+        {isEdit ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onDelete}
+            className="text-destructive hover:text-destructive hover:bg-[#f8e9e4]"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </Button>
+        ) : (
+          <span />
+        )}
+        <div className="flex gap-2">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit">{isEdit ? "Save changes" : "Add item"}</Button>
+        </div>
       </DialogFooter>
     </form>
   );

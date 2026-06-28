@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Category, PackList } from "./types";
 
-type SaveQueueEntry = { name?: string; categories?: Category[] };
+type SaveQueueEntry = {
+  name?: string;
+  categories?: Category[];
+  excludeConsumables?: boolean;
+};
 
 export function usePackState() {
   const [lists, setLists] = useState<PackList[]>([]);
@@ -81,6 +85,19 @@ export function usePackState() {
     [activeId, scheduleSave]
   );
 
+  const setActiveExcludeConsumables = useCallback(
+    (value: boolean) => {
+      if (!activeId) return;
+      setLists((prev) =>
+        prev.map((l) =>
+          l.id === activeId ? { ...l, excludeConsumables: value } : l
+        )
+      );
+      scheduleSave(activeId, { excludeConsumables: value });
+    },
+    [activeId, scheduleSave]
+  );
+
   const renameList = useCallback(
     (listId: string, name: string) => {
       setLists((prev) =>
@@ -129,6 +146,7 @@ export function usePackState() {
     loading,
     error,
     updateActive,
+    setActiveExcludeConsumables,
     renameList,
     createList,
     deleteList,

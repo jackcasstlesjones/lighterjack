@@ -19,9 +19,9 @@ type Props = {
   onEditCategory: () => void;
   onDeleteCategory: () => void;
   onEditItem: (itemId: string) => void;
-  onDeleteItem: (itemId: string) => void;
   onToggleItemUnit: (itemId: string) => void;
   onToggleItemEnabled: (itemId: string) => void;
+  onToggleItemConsumable: (itemId: string) => void;
   onToggleCategoryEnabled: () => void;
   onChangeItemQty: (itemId: string, delta: number) => void;
   onCatDragStart: () => void;
@@ -39,9 +39,9 @@ export function PackCategory({
   onEditCategory,
   onDeleteCategory,
   onEditItem,
-  onDeleteItem,
   onToggleItemUnit,
   onToggleItemEnabled,
+  onToggleItemConsumable,
   onToggleCategoryEnabled,
   onChangeItemQty,
   onCatDragStart,
@@ -136,10 +136,10 @@ export function PackCategory({
           mobileLayout={mobileItemLayout}
           onToggleUnit={() => onToggleItemUnit(item.id)}
           onToggleEnabled={() => onToggleItemEnabled(item.id)}
+          onToggleConsumable={() => onToggleItemConsumable(item.id)}
           onIncQty={() => onChangeItemQty(item.id, 1)}
           onDecQty={() => onChangeItemQty(item.id, -1)}
           onEdit={() => onEditItem(item.id)}
-          onDelete={() => onDeleteItem(item.id)}
           onDragStart={() => onItemDragStart(item.id)}
           onDragEnter={() => onItemDragEnter(item.id)}
           onDragEnd={onDragEnd}

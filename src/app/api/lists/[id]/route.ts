@@ -32,6 +32,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const body = (await req.json().catch(() => ({}))) as {
     name?: string;
     categories?: unknown;
+    excludeConsumables?: unknown;
   };
 
   const update: Record<string, unknown> = { updatedAt: new Date() };
@@ -41,6 +42,9 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   }
   if (body.categories !== undefined) {
     update.categories = sanitizeCategories(body.categories);
+  }
+  if (typeof body.excludeConsumables === "boolean") {
+    update.excludeConsumables = body.excludeConsumables;
   }
 
   const col = await getCollection();

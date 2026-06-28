@@ -22,23 +22,35 @@ export function categoryGrams(cat: Category): number {
   return cat.items.reduce((s, it) => s + itemGrams(it), 0);
 }
 
-export function enabledCategoryGrams(cat: Category): number {
-  return cat.items.reduce(
-    (s, it) => s + (isItemEnabled(it) ? itemGrams(it) : 0),
-    0
-  );
+export function isItemCounted(it: Item, excludeConsumables: boolean): boolean {
+  if (!isItemEnabled(it)) return false;
+  if (excludeConsumables && it.consumable) return false;
+  return true;
 }
 
-export function effectiveCategoryGrams(cat: Category): number {
-  return isCategoryEnabled(cat) ? enabledCategoryGrams(cat) : 0;
+export function effectiveCategoryGrams(
+  cat: Category,
+  excludeConsumables = false
+): number {
+  if (!isCategoryEnabled(cat)) return 0;
+  return cat.items.reduce(
+    (s, it) => s + (isItemCounted(it, excludeConsumables) ? itemGrams(it) : 0),
+    0
+  );
 }
 
 export function listGrams(cats: Category[]): number {
   return cats.reduce((s, c) => s + categoryGrams(c), 0);
 }
 
-export function effectiveListGrams(cats: Category[]): number {
-  return cats.reduce((s, c) => s + effectiveCategoryGrams(c), 0);
+export function effectiveListGrams(
+  cats: Category[],
+  excludeConsumables = false
+): number {
+  return cats.reduce(
+    (s, c) => s + effectiveCategoryGrams(c, excludeConsumables),
+    0
+  );
 }
 
 export function gramsToLbs(g: number): number {

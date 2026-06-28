@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  Droplet,
   Eye,
   EyeOff,
   GripVertical,
   Minus,
   Pencil,
   Plus,
-  Trash2,
 } from "lucide-react";
 import type { Item } from "./types";
 import type { MobileLayout } from "@/lib/mobile-layout";
@@ -19,10 +19,10 @@ type Props = {
   mobileLayout: MobileLayout;
   onToggleUnit: () => void;
   onToggleEnabled: () => void;
+  onToggleConsumable: () => void;
   onIncQty: () => void;
   onDecQty: () => void;
   onEdit: () => void;
-  onDelete: () => void;
   onDragStart: () => void;
   onDragEnter: () => void;
   onDragEnd: () => void;
@@ -33,10 +33,10 @@ export function PackItemRow({
   mobileLayout,
   onToggleUnit,
   onToggleEnabled,
+  onToggleConsumable,
   onIncQty,
   onDecQty,
   onEdit,
-  onDelete,
   onDragStart,
   onDragEnter,
   onDragEnd,
@@ -156,11 +156,19 @@ export function PackItemRow({
         <Pencil className="h-3.5 w-3.5" />
       </button>
       <button
-        onClick={onDelete}
-        title="Delete item"
-        className="w-8 h-8 flex items-center justify-center rounded-md text-[#9a9a92] hover:bg-[#f8e9e4] hover:text-destructive cursor-pointer"
+        onClick={onToggleConsumable}
+        title={item.consumable ? "Unmark as consumable" : "Mark as consumable"}
+        aria-pressed={item.consumable}
+        className={`w-8 h-8 flex items-center justify-center rounded-md cursor-pointer ${
+          item.consumable
+            ? "text-secondary-foreground bg-secondary hover:bg-secondary-hover"
+            : "text-[#9a9a92] hover:bg-[#efefea] hover:text-[#4b4b44]"
+        }`}
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        <Droplet
+          className="h-3.5 w-3.5"
+          fill={item.consumable ? "currentColor" : "none"}
+        />
       </button>
     </div>
   );

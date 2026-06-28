@@ -6,6 +6,7 @@ export type PackList = {
   id: string;
   name: string;
   categories: Category[];
+  excludeConsumables: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
 };

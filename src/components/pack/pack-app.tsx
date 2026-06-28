@@ -33,6 +33,7 @@ export function PackApp({ user, mobileItemLayout }: Props) {
     loading,
     error,
     updateActive,
+    setActiveExcludeConsumables,
     createList,
   } = usePackState();
 
@@ -84,14 +85,6 @@ export function PackApp({ user, mobileItemLayout }: Props) {
     setModal({ type: "cat", catId, draft: { name: c.name } });
   }
 
-  function openDeleteItem(catId: string, itemId: string) {
-    const it = categories
-      .find((c) => c.id === catId)
-      ?.items.find((x) => x.id === itemId);
-    if (!it) return;
-    setModal({ type: "delItem", catId, itemId, name: it.name });
-  }
-
   function openDeleteCategory(catId: string) {
     const c = categories.find((x) => x.id === catId);
     if (!c) return;
@@ -127,7 +120,16 @@ export function PackApp({ user, mobileItemLayout }: Props) {
           ...c,
           items: [
             ...c.items,
-            { id: uid("i"), name, desc, weight, unit, qty, enabled: true },
+            {
+              id: uid("i"),
+              name,
+              desc,
+              weight,
+              unit,
+              qty,
+              enabled: true,
+              consumable: false,
+            },
           ],
         };
       })
@@ -201,6 +203,31 @@ export function PackApp({ user, mobileItemLayout }: Props) {
             }
       )
     );
+  }
+
+  function toggleItemConsumable(catId: string, itemId: string) {
+    updateActive((cats) =>
+      cats.map((c) =>
+        c.id !== catId
+          ? c
+          : {
+              ...c,
+              items: c.items.map((it) =>
+                it.id === itemId ? { ...it, consumable: !it.consumable } : it
+              ),
+            }
+      )
+    );
+  }
+
+  function requestDeleteFromEdit() {
+    if (modal?.type !== "item" || !modal.itemId) return;
+    const { catId, itemId } = modal;
+    const it = categories
+      .find((c) => c.id === catId)
+      ?.items.find((x) => x.id === itemId);
+    if (!it) return;
+    setModal({ type: "delItem", catId, itemId, name: it.name });
   }
 
   function toggleCategoryEnabled(catId: string) {
@@ -314,6 +341,10 @@ export function PackApp({ user, mobileItemLayout }: Props) {
               onToggleTotalUnit={() =>
                 setTotalUnit((u) => (u === "kg" ? "g" : "kg"))
               }
+              excludeConsumables={activeList.excludeConsumables}
+              onToggleExcludeConsumables={() =>
+                setActiveExcludeConsumables(!activeList.excludeConsumables)
+              }
             />
 
             {categories.map((c, idx) => (
@@ -326,10 +357,12 @@ export function PackApp({ user, mobileItemLayout }: Props) {
                 onEditCategory={() => openEditCategory(c.id)}
                 onDeleteCategory={() => openDeleteCategory(c.id)}
                 onEditItem={(itemId) => openEditItem(c.id, itemId)}
-                onDeleteItem={(itemId) => openDeleteItem(c.id, itemId)}
                 onToggleItemUnit={(itemId) => toggleItemUnit(c.id, itemId)}
                 onToggleItemEnabled={(itemId) =>
                   toggleItemEnabled(c.id, itemId)
+                }
+                onToggleItemConsumable={(itemId) =>
+                  toggleItemConsumable(c.id, itemId)
                 }
                 onToggleCategoryEnabled={() => toggleCategoryEnabled(c.id)}
                 onChangeItemQty={(itemId, delta) =>
@@ -364,6 +397,7 @@ export function PackApp({ user, mobileItemLayout }: Props) {
         onClose={closeModal}
         onSaveItem={saveItem}
         onSaveCategory={saveCategory}
+        onRequestDeleteItem={requestDeleteFromEdit}
         onConfirmDelete={confirmDelete}
       />
     </div>
