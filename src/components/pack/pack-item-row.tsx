@@ -70,12 +70,12 @@ export function PackItemRow({
 
   const actions = (
     <div className="flex items-center gap-1.5 flex-none">
-      <span className="num text-sm w-[46px] text-right">{item.weight}</span>
       <button
         onClick={onToggleUnit}
         title="Toggle g / kg"
-        className="text-[12px] font-semibold text-secondary-foreground bg-secondary hover:bg-secondary-hover rounded-md px-2 py-1 min-w-[34px] cursor-pointer"
+        className="num text-sm text-right cursor-pointer hover:text-secondary-foreground"
       >
+        {item.weight}
         {item.unit}
       </button>
 
