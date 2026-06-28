@@ -67,7 +67,7 @@ export default function SignInPage() {
       className="min-h-screen flex items-center justify-center p-6"
       style={{
         background:
-          "radial-gradient(120% 90% at 50% -10%, #eef3e6 0%, #f4f4f2 55%)",
+          "radial-gradient(120% 90% at 50% -10%, var(--accent-backdrop) 0%, var(--background) 55%)",
       }}
     >
       <div className="w-full max-w-[392px] animate-in fade-in slide-in-from-bottom-2 duration-300">

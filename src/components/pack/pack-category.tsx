@@ -119,7 +119,7 @@ export function PackCategory({
 
       <button
         onClick={onAddItem}
-        className="flex items-center gap-1.5 w-full px-3.5 py-2.5 text-primary text-sm font-semibold text-left hover:bg-[#f7faf1] cursor-pointer"
+        className="flex items-center gap-1.5 w-full px-3.5 py-2.5 text-secondary-foreground text-sm font-semibold text-left hover:bg-accent-tint cursor-pointer"
       >
         <Plus className="h-3.5 w-3.5" />
         Add new item

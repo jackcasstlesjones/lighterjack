@@ -56,7 +56,7 @@ export function PackItemRow({
         <button
           onClick={onToggleUnit}
           title="Toggle g / kg"
-          className="text-[12px] font-semibold text-primary bg-secondary hover:bg-[#e3eed1] rounded-md px-2 py-1 min-w-[34px] cursor-pointer"
+          className="text-[12px] font-semibold text-secondary-foreground bg-secondary hover:bg-secondary-hover rounded-md px-2 py-1 min-w-[34px] cursor-pointer"
         >
           {item.unit}
         </button>

@@ -312,7 +312,7 @@ export function PackApp({ user }: Props) {
 
             <button
               onClick={openAddCategory}
-              className="flex items-center justify-center gap-2 w-full py-3.5 border-[1.5px] border-dashed border-[#d2d2cb] rounded-xl text-[#6b6b63] text-[14.5px] font-semibold mt-1.5 hover:border-primary hover:text-primary hover:bg-[#f7faf1] transition-colors cursor-pointer"
+              className="flex items-center justify-center gap-2 w-full py-3.5 border-[1.5px] border-dashed border-[#d2d2cb] rounded-xl text-[#6b6b63] text-[14.5px] font-semibold mt-1.5 hover:border-primary hover:text-secondary-foreground hover:bg-accent-tint transition-colors cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               New category

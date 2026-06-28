@@ -1,6 +1,7 @@
 "use client";
 
-import { Settings, Share2, Plus, LogOut, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { Settings, Plus, LogOut, ChevronDown } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,7 +46,7 @@ export function PackHeader({
 
   return (
     <header className="sticky top-0 z-20 bg-card/90 backdrop-blur border-b">
-      <div className="max-w-[980px] mx-auto px-4 py-2.5 flex items-center gap-3 flex-wrap">
+      <div className="max-w-[980px] mx-auto px-4 py-2.5 flex items-center gap-2 sm:gap-3">
         <BrandMark size="sm" showWordmark={false} />
 
         <DropdownMenu>
@@ -87,19 +88,23 @@ export function PackHeader({
 
         <div className="flex-1" />
 
-        <Button variant="ghost" size="sm" className="text-[#5b5b53] gap-1.5">
-          <Share2 className="h-3.5 w-3.5" />
-          <span className="whitespace-nowrap">Share</span>
-        </Button>
-        <Button variant="ghost" size="sm" className="text-[#5b5b53] gap-1.5">
-          <Settings className="h-3.5 w-3.5" />
-          <span className="whitespace-nowrap">Settings</span>
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          aria-label="Settings"
+          className="text-[#5b5b53] gap-1.5 px-2 sm:px-3"
+        >
+          <Link href="/settings">
+            <Settings className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline whitespace-nowrap">Settings</span>
+          </Link>
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-2 px-1.5 py-1 rounded-md hover:bg-muted cursor-pointer">
-              <div className="w-[27px] h-[27px] rounded-full bg-[#dfe7cf] text-[#4f7415] flex items-center justify-center font-bold text-[12px]">
+              <div className="w-[27px] h-[27px] rounded-full bg-secondary text-secondary-foreground flex items-center justify-center font-bold text-[12px]">
                 {initials}
               </div>
               <ChevronDown className="h-3.5 w-3.5 text-[#9a9a92]" />
