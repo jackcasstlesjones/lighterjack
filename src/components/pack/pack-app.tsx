@@ -125,7 +125,10 @@ export function PackApp({ user, mobileItemLayout }: Props) {
         }
         return {
           ...c,
-          items: [...c.items, { id: uid("i"), name, desc, weight, unit, qty }],
+          items: [
+            ...c.items,
+            { id: uid("i"), name, desc, weight, unit, qty, enabled: true },
+          ],
         };
       })
     );
@@ -137,7 +140,7 @@ export function PackApp({ user, mobileItemLayout }: Props) {
     const catId = modal.catId;
     updateActive((cats) => {
       if (catId) return cats.map((c) => (c.id === catId ? { ...c, name } : c));
-      return [...cats, { id: uid("c"), name, items: [] }];
+      return [...cats, { id: uid("c"), name, enabled: true, items: [] }];
     });
     closeModal();
   }
@@ -182,6 +185,29 @@ export function PackApp({ user, mobileItemLayout }: Props) {
           }),
         };
       })
+    );
+  }
+
+  function toggleItemEnabled(catId: string, itemId: string) {
+    updateActive((cats) =>
+      cats.map((c) =>
+        c.id !== catId
+          ? c
+          : {
+              ...c,
+              items: c.items.map((it) =>
+                it.id === itemId ? { ...it, enabled: !it.enabled } : it
+              ),
+            }
+      )
+    );
+  }
+
+  function toggleCategoryEnabled(catId: string) {
+    updateActive((cats) =>
+      cats.map((c) =>
+        c.id === catId ? { ...c, enabled: !c.enabled } : c
+      )
     );
   }
 
@@ -302,6 +328,10 @@ export function PackApp({ user, mobileItemLayout }: Props) {
                 onEditItem={(itemId) => openEditItem(c.id, itemId)}
                 onDeleteItem={(itemId) => openDeleteItem(c.id, itemId)}
                 onToggleItemUnit={(itemId) => toggleItemUnit(c.id, itemId)}
+                onToggleItemEnabled={(itemId) =>
+                  toggleItemEnabled(c.id, itemId)
+                }
+                onToggleCategoryEnabled={() => toggleCategoryEnabled(c.id)}
                 onChangeItemQty={(itemId, delta) =>
                   changeItemQty(c.id, itemId, delta)
                 }

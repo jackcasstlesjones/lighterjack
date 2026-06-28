@@ -10,11 +10,13 @@ export type Item = {
   weight: number;
   unit: "g" | "kg";
   qty: number;
+  enabled: boolean;
 };
 
 export type Category = {
   id: string;
   name: string;
+  enabled: boolean;
   items: Item[];
 };
 
@@ -75,6 +77,7 @@ export function sanitizeCategories(input: unknown): Category[] {
                 weight: Number.isFinite(weight) ? weight : 0,
                 unit: unit as "g" | "kg",
                 qty: Number.isFinite(qty) ? Math.max(0, Math.floor(qty)) : 1,
+                enabled: typeof i.enabled === "boolean" ? i.enabled : true,
               } as Item;
             })
             .filter((x): x is Item => x !== null)
@@ -82,6 +85,7 @@ export function sanitizeCategories(input: unknown): Category[] {
       return {
         id: typeof cat.id === "string" ? cat.id : uid("c"),
         name: typeof cat.name === "string" ? cat.name : "Untitled",
+        enabled: typeof cat.enabled === "boolean" ? cat.enabled : true,
         items,
       } as Category;
     })
@@ -93,14 +97,15 @@ export function starterCategories(): Category[] {
     {
       id: uid("c"),
       name: "Big 4",
+      enabled: true,
       items: [
-        { id: uid("i"), name: "Tent", desc: "", weight: 1200, unit: "g", qty: 1 },
-        { id: uid("i"), name: "Sleeping pad", desc: "", weight: 480, unit: "g", qty: 1 },
-        { id: uid("i"), name: "Quilt", desc: "", weight: 600, unit: "g", qty: 1 },
-        { id: uid("i"), name: "Pack", desc: "", weight: 900, unit: "g", qty: 1 },
+        { id: uid("i"), name: "Tent", desc: "", weight: 1200, unit: "g", qty: 1, enabled: true },
+        { id: uid("i"), name: "Sleeping pad", desc: "", weight: 480, unit: "g", qty: 1, enabled: true },
+        { id: uid("i"), name: "Quilt", desc: "", weight: 600, unit: "g", qty: 1, enabled: true },
+        { id: uid("i"), name: "Pack", desc: "", weight: 900, unit: "g", qty: 1, enabled: true },
       ],
     },
-    { id: uid("c"), name: "Clothes", items: [] },
-    { id: uid("c"), name: "Cookset", items: [] },
+    { id: uid("c"), name: "Clothes", enabled: true, items: [] },
+    { id: uid("c"), name: "Cookset", enabled: true, items: [] },
   ];
 }

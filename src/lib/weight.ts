@@ -10,12 +10,35 @@ export function itemGrams(it: Item): number {
   return g * it.qty;
 }
 
+export function isItemEnabled(it: Item): boolean {
+  return it.enabled !== false;
+}
+
+export function isCategoryEnabled(c: Category): boolean {
+  return c.enabled !== false;
+}
+
 export function categoryGrams(cat: Category): number {
   return cat.items.reduce((s, it) => s + itemGrams(it), 0);
 }
 
+export function enabledCategoryGrams(cat: Category): number {
+  return cat.items.reduce(
+    (s, it) => s + (isItemEnabled(it) ? itemGrams(it) : 0),
+    0
+  );
+}
+
+export function effectiveCategoryGrams(cat: Category): number {
+  return isCategoryEnabled(cat) ? enabledCategoryGrams(cat) : 0;
+}
+
 export function listGrams(cats: Category[]): number {
   return cats.reduce((s, c) => s + categoryGrams(c), 0);
+}
+
+export function effectiveListGrams(cats: Category[]): number {
+  return cats.reduce((s, c) => s + effectiveCategoryGrams(c), 0);
 }
 
 const PALETTE = [

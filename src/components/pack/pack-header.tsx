@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import type { PackList } from "./types";
-import { listGrams, trim } from "@/lib/weight";
+import { effectiveListGrams, trim } from "@/lib/weight";
 
 type Props = {
   lists: PackList[];
@@ -68,7 +68,7 @@ export function PackHeader({
               >
                 <span className="font-medium">{l.name}</span>
                 <span className="num text-[12.5px] text-[#a6a69e]">
-                  {trim(listGrams(l.categories) / 1000)} kg
+                  {trim(effectiveListGrams(l.categories) / 1000)} kg
                 </span>
                 {l.id === activeId ? (
                   <span className="sr-only">active</span>

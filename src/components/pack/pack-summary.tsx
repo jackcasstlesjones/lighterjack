@@ -2,7 +2,13 @@
 
 import { Card } from "@/components/ui/card";
 import type { Category } from "./types";
-import { categoryGrams, colorFor, listGrams, trim } from "@/lib/weight";
+import {
+  colorFor,
+  effectiveCategoryGrams,
+  effectiveListGrams,
+  isCategoryEnabled,
+  trim,
+} from "@/lib/weight";
 
 type Props = {
   categories: Category[];
@@ -11,12 +17,12 @@ type Props = {
 };
 
 export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props) {
-  const totalG = listGrams(categories);
+  const totalG = effectiveListGrams(categories);
 
   let cum = 0;
   const segments = categories
     .map((c, i) => {
-      const g = categoryGrams(c);
+      const g = effectiveCategoryGrams(c);
       const pct = totalG ? (g / totalG) * 100 : 0;
       const seg = {
         color: colorFor(i),
@@ -78,17 +84,26 @@ export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props)
         </div>
 
         {categories.map((c, i) => {
-          const g = categoryGrams(c);
+          const g = effectiveCategoryGrams(c);
+          const enabled = isCategoryEnabled(c);
           return (
             <div
               key={c.id}
-              className="flex items-center px-1 py-[7px] text-sm"
+              className={`flex items-center px-1 py-[7px] text-sm ${
+                enabled ? "" : "opacity-40"
+              }`}
             >
               <span
                 className="w-[11px] h-[11px] rounded-[3px] flex-none mr-2.5"
                 style={{ background: colorFor(i) }}
               />
-              <span className="flex-1 font-medium truncate">{c.name}</span>
+              <span
+                className={`flex-1 font-medium truncate ${
+                  enabled ? "" : "line-through"
+                }`}
+              >
+                {c.name}
+              </span>
               <span className="num w-[62px] text-right text-[#3b3b35]">
                 {trim(g / 1000)}
               </span>

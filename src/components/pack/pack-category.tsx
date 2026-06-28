@@ -1,10 +1,15 @@
 "use client";
 
-import { GripVertical, Pencil, Trash2, Plus } from "lucide-react";
+import { Eye, EyeOff, GripVertical, Pencil, Trash2, Plus } from "lucide-react";
 import { PackItemRow } from "./pack-item-row";
 import type { Category } from "./types";
 import type { MobileLayout } from "@/lib/mobile-layout";
-import { categoryGrams, colorFor, trim } from "@/lib/weight";
+import {
+  colorFor,
+  effectiveCategoryGrams,
+  isCategoryEnabled,
+  trim,
+} from "@/lib/weight";
 
 type Props = {
   category: Category;
@@ -16,6 +21,8 @@ type Props = {
   onEditItem: (itemId: string) => void;
   onDeleteItem: (itemId: string) => void;
   onToggleItemUnit: (itemId: string) => void;
+  onToggleItemEnabled: (itemId: string) => void;
+  onToggleCategoryEnabled: () => void;
   onChangeItemQty: (itemId: string, delta: number) => void;
   onCatDragStart: () => void;
   onCatDragEnter: () => void;
@@ -34,6 +41,8 @@ export function PackCategory({
   onEditItem,
   onDeleteItem,
   onToggleItemUnit,
+  onToggleItemEnabled,
+  onToggleCategoryEnabled,
   onChangeItemQty,
   onCatDragStart,
   onCatDragEnter,
@@ -41,7 +50,8 @@ export function PackCategory({
   onItemDragEnter,
   onDragEnd,
 }: Props) {
-  const totalKg = trim(categoryGrams(category) / 1000);
+  const enabled = isCategoryEnabled(category);
+  const totalKg = trim(effectiveCategoryGrams(category) / 1000);
   const qty = category.items.reduce((a, it) => a + it.qty, 0);
   const empty = category.items.length === 0;
 
@@ -69,7 +79,9 @@ export function PackCategory({
           style={{ background: colorFor(colorIndex) }}
         />
         <h2
-          className="m-0 flex-1 text-[16.5px] font-bold truncate"
+          className={`m-0 flex-1 text-[16.5px] font-bold truncate ${
+            enabled ? "" : "line-through text-[#9a9a92]"
+          }`}
           style={{ letterSpacing: "-0.01em" }}
         >
           {category.name}
@@ -83,6 +95,22 @@ export function PackCategory({
         >
           {qty}
         </span>
+        <button
+          onClick={onToggleCategoryEnabled}
+          title={enabled ? "Exclude from total" : "Include in total"}
+          aria-pressed={!enabled}
+          className={`w-8 h-8 flex items-center justify-center rounded-md cursor-pointer ${
+            enabled
+              ? "text-[#9a9a92] hover:bg-[#efefea] hover:text-[#4b4b44]"
+              : "text-secondary-foreground bg-secondary hover:bg-secondary-hover"
+          }`}
+        >
+          {enabled ? (
+            <Eye className="h-3.5 w-3.5" />
+          ) : (
+            <EyeOff className="h-3.5 w-3.5" />
+          )}
+        </button>
         <button
           onClick={onEditCategory}
           title="Edit category"
@@ -105,6 +133,7 @@ export function PackCategory({
           item={item}
           mobileLayout={mobileItemLayout}
           onToggleUnit={() => onToggleItemUnit(item.id)}
+          onToggleEnabled={() => onToggleItemEnabled(item.id)}
           onIncQty={() => onChangeItemQty(item.id, 1)}
           onDecQty={() => onChangeItemQty(item.id, -1)}
           onEdit={() => onEditItem(item.id)}
