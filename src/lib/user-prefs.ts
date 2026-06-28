@@ -1,10 +1,21 @@
 import { getDb } from "./mongo";
 import { DEFAULT_ACCENT, normalizeAccent, type AccentColor } from "./accents";
+import {
+  DEFAULT_MOBILE_LAYOUT,
+  normalizeMobileLayout,
+  type MobileLayout,
+} from "./mobile-layout";
 
 type UserPrefsDoc = {
   userId: string;
-  accentColor: AccentColor;
+  accentColor?: AccentColor;
+  mobileItemLayout?: MobileLayout;
   updatedAt: Date;
+};
+
+export type UserPrefs = {
+  accentColor: AccentColor;
+  mobileItemLayout: MobileLayout;
 };
 
 async function collection() {
@@ -12,10 +23,17 @@ async function collection() {
   return db.collection<UserPrefsDoc>("userPrefs");
 }
 
-export async function getUserAccent(userId: string): Promise<AccentColor> {
+export async function getUserPrefs(userId: string): Promise<UserPrefs> {
   const col = await collection();
   const doc = await col.findOne({ userId });
-  return normalizeAccent(doc?.accentColor);
+  return {
+    accentColor: normalizeAccent(doc?.accentColor),
+    mobileItemLayout: normalizeMobileLayout(doc?.mobileItemLayout),
+  };
+}
+
+export async function getUserAccent(userId: string): Promise<AccentColor> {
+  return (await getUserPrefs(userId)).accentColor;
 }
 
 export async function setUserAccent(
@@ -33,4 +51,19 @@ export async function setUserAccent(
   );
 }
 
-export { DEFAULT_ACCENT };
+export async function setUserMobileLayout(
+  userId: string,
+  layout: MobileLayout
+): Promise<void> {
+  const col = await collection();
+  await col.updateOne(
+    { userId },
+    {
+      $set: { mobileItemLayout: layout, updatedAt: new Date() },
+      $setOnInsert: { userId },
+    },
+    { upsert: true }
+  );
+}
+
+export { DEFAULT_ACCENT, DEFAULT_MOBILE_LAYOUT };

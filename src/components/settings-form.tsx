@@ -16,19 +16,32 @@ import {
   ACCENT_SWATCH,
   type AccentColor,
 } from "@/lib/accents";
+import {
+  MOBILE_LAYOUTS,
+  MOBILE_LAYOUT_LABEL,
+  type MobileLayout,
+} from "@/lib/mobile-layout";
 
-export function SettingsForm({ initialAccent }: { initialAccent: AccentColor }) {
+type Status = "idle" | "saving" | "saved" | "error";
+
+type Props = {
+  initialAccent: AccentColor;
+  initialMobileLayout: MobileLayout;
+};
+
+export function SettingsForm({ initialAccent, initialMobileLayout }: Props) {
   const router = useRouter();
   const [accent, setAccent] = useState<AccentColor>(initialAccent);
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
-    "idle"
-  );
+  const [accentStatus, setAccentStatus] = useState<Status>("idle");
+  const [mobileLayout, setMobileLayout] =
+    useState<MobileLayout>(initialMobileLayout);
+  const [layoutStatus, setLayoutStatus] = useState<Status>("idle");
 
   async function onAccentChange(next: string) {
     const value = next as AccentColor;
     setAccent(value);
     document.body.setAttribute("data-accent", value);
-    setStatus("saving");
+    setAccentStatus("saving");
     try {
       const res = await fetch("/api/profile/accent", {
         method: "PATCH",
@@ -36,13 +49,34 @@ export function SettingsForm({ initialAccent }: { initialAccent: AccentColor }) 
         body: JSON.stringify({ accentColor: value }),
       });
       if (!res.ok) {
-        setStatus("error");
+        setAccentStatus("error");
         return;
       }
-      setStatus("saved");
+      setAccentStatus("saved");
       router.refresh();
     } catch {
-      setStatus("error");
+      setAccentStatus("error");
+    }
+  }
+
+  async function onMobileLayoutChange(next: string) {
+    const value = next as MobileLayout;
+    setMobileLayout(value);
+    setLayoutStatus("saving");
+    try {
+      const res = await fetch("/api/profile/mobile-layout", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobileItemLayout: value }),
+      });
+      if (!res.ok) {
+        setLayoutStatus("error");
+        return;
+      }
+      setLayoutStatus("saved");
+      router.refresh();
+    } catch {
+      setLayoutStatus("error");
     }
   }
 
@@ -76,9 +110,36 @@ export function SettingsForm({ initialAccent }: { initialAccent: AccentColor }) 
           </SelectContent>
         </Select>
         <p className="text-xs text-muted-foreground mt-2 h-4">
-          {status === "saving" && "Saving…"}
-          {status === "saved" && "Saved."}
-          {status === "error" && (
+          {accentStatus === "saving" && "Saving…"}
+          {accentStatus === "saved" && "Saved."}
+          {accentStatus === "error" && (
+            <span className="text-destructive">Couldn’t save. Try again.</span>
+          )}
+        </p>
+      </div>
+
+      <div className="max-w-[260px] mt-5">
+        <Label htmlFor="mobile-layout" className="mb-1.5 block">
+          Mobile item layout
+        </Label>
+        <Select value={mobileLayout} onValueChange={onMobileLayoutChange}>
+          <SelectTrigger id="mobile-layout">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {MOBILE_LAYOUTS.map((l) => (
+              <SelectItem key={l} value={l}>
+                {MOBILE_LAYOUT_LABEL[l].label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground mt-2 h-4">
+          {layoutStatus === "idle" &&
+            MOBILE_LAYOUT_LABEL[mobileLayout].description}
+          {layoutStatus === "saving" && "Saving…"}
+          {layoutStatus === "saved" && "Saved."}
+          {layoutStatus === "error" && (
             <span className="text-destructive">Couldn’t save. Try again.</span>
           )}
         </p>

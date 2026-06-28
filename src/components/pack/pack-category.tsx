@@ -3,11 +3,13 @@
 import { GripVertical, Pencil, Trash2, Plus } from "lucide-react";
 import { PackItemRow } from "./pack-item-row";
 import type { Category } from "./types";
+import type { MobileLayout } from "@/lib/mobile-layout";
 import { categoryGrams, colorFor, trim } from "@/lib/weight";
 
 type Props = {
   category: Category;
   colorIndex: number;
+  mobileItemLayout: MobileLayout;
   onAddItem: () => void;
   onEditCategory: () => void;
   onDeleteCategory: () => void;
@@ -25,6 +27,7 @@ type Props = {
 export function PackCategory({
   category,
   colorIndex,
+  mobileItemLayout,
   onAddItem,
   onEditCategory,
   onDeleteCategory,
@@ -100,6 +103,7 @@ export function PackCategory({
         <PackItemRow
           key={item.id}
           item={item}
+          mobileLayout={mobileItemLayout}
           onToggleUnit={() => onToggleItemUnit(item.id)}
           onIncQty={() => onChangeItemQty(item.id, 1)}
           onDecQty={() => onChangeItemQty(item.id, -1)}

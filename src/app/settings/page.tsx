@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { ArrowLeft } from "lucide-react";
 import { auth } from "@/lib/auth";
-import { getUserAccent } from "@/lib/user-prefs";
+import { getUserPrefs } from "@/lib/user-prefs";
 import { SettingsForm } from "@/components/settings-form";
 import { DangerZone } from "@/components/danger-zone";
 import { BrandMark } from "@/components/brand-mark";
@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) redirect("/sign-in");
 
-  const accent = await getUserAccent(session.user.id);
+  const prefs = await getUserPrefs(session.user.id);
 
   return (
     <div className="min-h-screen">
@@ -43,7 +43,10 @@ export default async function SettingsPage() {
           Signed in as {session.user.email}
         </p>
 
-        <SettingsForm initialAccent={accent} />
+        <SettingsForm
+          initialAccent={prefs.accentColor}
+          initialMobileLayout={prefs.mobileItemLayout}
+        />
         <DangerZone email={session.user.email} />
       </main>
     </div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
 import { uid } from "@/lib/weight";
+import type { MobileLayout } from "@/lib/mobile-layout";
 import type { Category, ItemDraft, ModalState } from "./types";
 import { usePackState } from "./use-pack-state";
 import { PackHeader } from "./pack-header";
@@ -15,6 +16,7 @@ import { PackModals } from "./pack-modals";
 
 type Props = {
   user: { id: string; name: string; email: string };
+  mobileItemLayout: MobileLayout;
 };
 
 type Drag =
@@ -22,7 +24,7 @@ type Drag =
   | { kind: "cat"; id: string }
   | null;
 
-export function PackApp({ user }: Props) {
+export function PackApp({ user, mobileItemLayout }: Props) {
   const router = useRouter();
   const {
     lists,
@@ -293,6 +295,7 @@ export function PackApp({ user }: Props) {
                 key={c.id}
                 category={c}
                 colorIndex={idx}
+                mobileItemLayout={mobileItemLayout}
                 onAddItem={() => openAddItem(c.id)}
                 onEditCategory={() => openEditCategory(c.id)}
                 onDeleteCategory={() => openDeleteCategory(c.id)}
