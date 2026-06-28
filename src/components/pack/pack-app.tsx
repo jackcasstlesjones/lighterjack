@@ -376,6 +376,7 @@ export function PackApp({ user, mobileItemLayout }: Props) {
                 category={c}
                 colorIndex={idx}
                 mobileItemLayout={mobileItemLayout}
+                excludeConsumables={activeList.excludeConsumables}
                 onAddItem={() => openAddItem(c.id)}
                 onEditCategory={() => openEditCategory(c.id)}
                 onDeleteCategory={() => openDeleteCategory(c.id)}

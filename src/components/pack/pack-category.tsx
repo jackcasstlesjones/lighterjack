@@ -15,6 +15,7 @@ type Props = {
   category: Category;
   colorIndex: number;
   mobileItemLayout: MobileLayout;
+  excludeConsumables: boolean;
   onAddItem: () => void;
   onEditCategory: () => void;
   onDeleteCategory: () => void;
@@ -35,6 +36,7 @@ export function PackCategory({
   category,
   colorIndex,
   mobileItemLayout,
+  excludeConsumables,
   onAddItem,
   onEditCategory,
   onDeleteCategory,
@@ -51,7 +53,9 @@ export function PackCategory({
   onDragEnd,
 }: Props) {
   const enabled = isCategoryEnabled(category);
-  const totalKg = trim(effectiveCategoryGrams(category) / 1000);
+  const totalKg = trim(
+    effectiveCategoryGrams(category, excludeConsumables) / 1000
+  );
   const qty = category.items.reduce((a, it) => a + it.qty, 0);
   const empty = category.items.length === 0;
 
