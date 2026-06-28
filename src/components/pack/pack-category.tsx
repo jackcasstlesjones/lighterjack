@@ -95,36 +95,38 @@ export function PackCategory({
         >
           {qty}
         </span>
-        <button
-          onClick={onToggleCategoryEnabled}
-          title={enabled ? "Exclude from total" : "Include in total"}
-          aria-pressed={!enabled}
-          className={`w-8 h-8 flex items-center justify-center rounded-md cursor-pointer ${
-            enabled
-              ? "text-[#9a9a92] hover:bg-[#efefea] hover:text-[#4b4b44]"
-              : "text-secondary-foreground bg-secondary hover:bg-secondary-hover"
-          }`}
-        >
-          {enabled ? (
-            <Eye className="h-3.5 w-3.5" />
-          ) : (
-            <EyeOff className="h-3.5 w-3.5" />
-          )}
-        </button>
-        <button
-          onClick={onEditCategory}
-          title="Edit category"
-          className="w-8 h-8 flex items-center justify-center rounded-md text-[#9a9a92] hover:bg-[#efefea] hover:text-[#4b4b44] cursor-pointer"
-        >
-          <Pencil className="h-3.5 w-3.5" />
-        </button>
-        <button
-          onClick={onDeleteCategory}
-          title="Delete category"
-          className="w-8 h-8 flex items-center justify-center rounded-md text-[#9a9a92] hover:bg-[#f8e9e4] hover:text-destructive cursor-pointer"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={onToggleCategoryEnabled}
+            title={enabled ? "Exclude from total" : "Include in total"}
+            aria-pressed={!enabled}
+            className={`w-8 h-8 flex items-center justify-center rounded-md cursor-pointer ${
+              enabled
+                ? "text-[#9a9a92] hover:bg-[#efefea] hover:text-[#4b4b44]"
+                : "text-secondary-foreground bg-secondary hover:bg-secondary-hover"
+            }`}
+          >
+            {enabled ? (
+              <Eye className="h-3.5 w-3.5" />
+            ) : (
+              <EyeOff className="h-3.5 w-3.5" />
+            )}
+          </button>
+          <button
+            onClick={onEditCategory}
+            title="Edit category"
+            className="w-8 h-8 flex items-center justify-center rounded-md text-[#9a9a92] hover:bg-[#efefea] hover:text-[#4b4b44] cursor-pointer"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={onDeleteCategory}
+            title="Delete category"
+            className="w-8 h-8 flex items-center justify-center rounded-md text-[#9a9a92] hover:bg-[#f8e9e4] hover:text-destructive cursor-pointer"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
 
       {category.items.map((item) => (
