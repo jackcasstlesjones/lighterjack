@@ -1,0 +1,15 @@
+services:
+  lighterjack:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lighterjack
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - cf-tunnel
+
+networks:
+  cf-tunnel:
+    external: true
