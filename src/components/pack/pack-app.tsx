@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import { signOut } from "@/lib/auth-client";
 import { uid } from "@/lib/weight";
 import type { MobileLayout } from "@/lib/mobile-layout";
@@ -295,6 +295,29 @@ export function PackApp({ user, mobileItemLayout }: Props) {
     dragRef.current = null;
   }
 
+  function downloadActiveList() {
+    if (!activeList) return;
+    const payload = {
+      name: activeList.name,
+      excludeConsumables: activeList.excludeConsumables,
+      categories: activeList.categories,
+    };
+    const slug =
+      activeList.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-") ||
+      "pack-list";
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${slug}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
   async function handleSignOut() {
     await signOut();
     router.push("/sign-in");
@@ -390,6 +413,17 @@ export function PackApp({ user, mobileItemLayout }: Props) {
             onAddCategory={openAddCategory}
           />
         )}
+
+        <div className="flex justify-center mt-16">
+          <button
+            type="button"
+            onClick={downloadActiveList}
+            className="inline-flex items-center gap-1.5 text-[12.5px] text-[#a6a69e] hover:text-[#4b4b44] cursor-pointer"
+          >
+            <Download className="h-3 w-3" />
+            Download list as JSON
+          </button>
+        </div>
       </main>
 
       <PackModals
