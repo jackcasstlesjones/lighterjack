@@ -6,6 +6,7 @@ import {
   colorFor,
   effectiveCategoryGrams,
   effectiveListGrams,
+  gramsToLbs,
   isCategoryEnabled,
   trim,
 } from "@/lib/weight";
@@ -37,6 +38,7 @@ export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props)
     .filter((s) => s.pct > 0);
 
   const totalKg = trim(totalG / 1000);
+  const totalLbs = trim(gramsToLbs(totalG));
   const totalDisplay = totalUnit === "kg" ? totalKg : Math.round(totalG);
 
   return (
@@ -75,6 +77,9 @@ export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props)
           </div>
           <div className="text-[12px] text-[#9a9a92] font-medium mt-0.5">
             kg total
+          </div>
+          <div className="num text-[11.5px] text-[#b0b0a8] font-medium mt-0.5">
+            {totalLbs} lbs
           </div>
         </div>
       </div>
@@ -118,13 +123,16 @@ export function PackSummary({ categories, totalUnit, onToggleTotalUnit }: Props)
 
         <div className="flex items-center px-1 pt-2.5 mt-1.5 border-t border-[#eeeeea] text-sm font-bold">
           <span className="flex-1">Total</span>
-          <span className="num w-[62px] text-right">{totalDisplay}</span>
           <button
             onClick={onToggleTotalUnit}
-            className="w-[30px] text-right text-primary text-[12.5px] font-semibold cursor-pointer hover:underline"
+            className="num text-right cursor-pointer hover:text-secondary-foreground"
           >
+            {totalDisplay}
             {totalUnit}
           </button>
+          <span className="num text-[#a6a69e] font-medium ml-1.5">
+            / {totalLbs} lbs
+          </span>
         </div>
       </div>
     </Card>

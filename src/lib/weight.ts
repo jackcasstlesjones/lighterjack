@@ -41,6 +41,10 @@ export function effectiveListGrams(cats: Category[]): number {
   return cats.reduce((s, c) => s + effectiveCategoryGrams(c), 0);
 }
 
+export function gramsToLbs(g: number): number {
+  return g / 453.59237;
+}
+
 const PALETTE = [
   "#3b82f6",
   "#ef4444",
